@@ -65,7 +65,7 @@ const Projects = ({ darkMode }) => {
     // 🔥 CLICK FUNCTION
     const handleProjectClick = (link) => {
         if (link) {
-            
+            window.open(link, "_blank")
         } else {
             alert('🚧 Project Coming Soon...')
         }
