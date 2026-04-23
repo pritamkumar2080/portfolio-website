@@ -5,7 +5,7 @@ import instagram from '../assets/instagram.png'
 // import tiktok from '../assets/tiktok.png'
 import hero from '../assets/hero3.png'
 import hi from '../assets/hi.png'
-import CV from '../assets/cv2.pdf'
+import CV from '../assets/CV2.pdf'
 
 // icons (make sure lucide-react is installed)
 import { Download, Mail } from 'lucide-react'
