@@ -48,7 +48,7 @@ const Contact = ({ darkMode }) => {
     }
 
     try {
-      const res = await fetch("https://portfolio-website-ujdz.onrender.com", {
+      const res = await fetch("https://portfolio-website-ujdz.onrender.com/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
