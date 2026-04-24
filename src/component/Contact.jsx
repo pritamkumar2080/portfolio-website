@@ -11,6 +11,8 @@ const Contact = ({ darkMode }) => {
     message: ""
   })
 
+  const [loading, setLoading] = useState(false)
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,7 +23,7 @@ const Contact = ({ darkMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // 🔥 EMPTY VALIDATION
+    // ✅ EMPTY VALIDATION
     if (
       !formData.firstName.trim() ||
       !formData.lastName.trim() ||
@@ -33,14 +35,14 @@ const Contact = ({ darkMode }) => {
       return
     }
 
-    // 🔥 EMAIL VALIDATION
+    // ✅ EMAIL VALIDATION
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
       alert("⚠️ Enter a valid email!")
       return
     }
 
-    // 🔥 MOBILE VALIDATION (10 digits)
+    // ✅ MOBILE VALIDATION
     const mobileRegex = /^[0-9]{10}$/
     if (!mobileRegex.test(formData.mobile)) {
       alert("⚠️ Enter valid 10-digit mobile number!")
@@ -48,6 +50,8 @@ const Contact = ({ darkMode }) => {
     }
 
     try {
+      setLoading(true)
+
       const res = await fetch("https://portfolio-website-ujdz.onrender.com/send-email", {
         method: "POST",
         headers: {
@@ -56,12 +60,20 @@ const Contact = ({ darkMode }) => {
         body: JSON.stringify(formData)
       })
 
+      // 🔥 IMPORTANT DEBUG
+      if (!res.ok) {
+        const text = await res.text()
+        console.log("Server Error:", text)
+        alert("Server error ❌")
+        setLoading(false)
+        return
+      }
+
       const data = await res.json()
 
       if (data.success) {
         alert("Message sent ✅")
 
-        // RESET FORM
         setFormData({
           firstName: "",
           lastName: "",
@@ -72,8 +84,12 @@ const Contact = ({ darkMode }) => {
       } else {
         alert("Failed ❌")
       }
+
     } catch (err) {
+      console.log("ERROR:", err)
       alert("Server error ❌")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -110,7 +126,7 @@ const Contact = ({ darkMode }) => {
           
           {/* Image */}
           <div className='flex justify-center'>
-            <img src={contactImg} alt="" className='max-w-sm' />
+            <img src={contactImg} alt="contact" className='max-w-sm' />
           </div>
 
           {/* FORM */}
@@ -130,7 +146,6 @@ const Contact = ({ darkMode }) => {
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="First Name"
-                required
                 className='w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-orange-500 outline-none'
               />
 
@@ -140,7 +155,6 @@ const Contact = ({ darkMode }) => {
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Last Name"
-                required
                 className='w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-orange-500 outline-none'
               />
 
@@ -150,7 +164,6 @@ const Contact = ({ darkMode }) => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email Address"
-                required
                 className='w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-orange-500 outline-none'
               />
 
@@ -160,7 +173,6 @@ const Contact = ({ darkMode }) => {
                 value={formData.mobile}
                 onChange={handleChange}
                 placeholder="Mobile Number"
-                required
                 className='w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-orange-500 outline-none'
               />
 
@@ -170,15 +182,15 @@ const Contact = ({ darkMode }) => {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Your Message"
-                required
                 className='w-full sm:col-span-2 px-4 py-3 rounded-lg border focus:ring-2 focus:ring-orange-500 outline-none'
               />
 
               <button
                 type="submit"
+                disabled={loading}
                 className='w-full sm:col-span-2 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all'
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
 
             </div>

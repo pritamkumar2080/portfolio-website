@@ -3,13 +3,13 @@ import nodemailer from "nodemailer"
 import cors from "cors"
 import dotenv from "dotenv"
 
-dotenv.config({ path: "./.env" })
+dotenv.config()
 
 const app = express()
 
-app.use(cors({
-  origin: "http://localhost:5173"
-}))
+// ✅ CORS FIX (allow all)
+app.use(cors())
+
 app.use(express.json())
 
 app.get("/", (req, res) => {
@@ -23,15 +23,15 @@ app.post("/send-email", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASS
+        user: process.env.EMAIL_USER,   // ✅ FIXED
+        pass: process.env.EMAIL_PASS    // ✅ FIXED
       }
     })
 
     const mailOptions = {
-      from: process.env.EMAIL,
-      to: process.env.EMAIL,
-      subject: "New Hire Request 🚀",
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "New Contact Form Message 🚀",
       html: `
         <h3>New Contact Form Submission</h3>
         <p><b>Name:</b> ${firstName} ${lastName}</p>
@@ -50,6 +50,9 @@ app.post("/send-email", async (req, res) => {
   }
 })
 
-app.listen(5000, () => {
-  console.log("🚀 Server running on http://localhost:5000")
+// ✅ PORT FIX (VERY IMPORTANT)
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`)
 })
